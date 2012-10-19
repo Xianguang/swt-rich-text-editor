@@ -5,7 +5,7 @@
 		<artifactId>swt-rich-text-editor-parent</artifactId>
 		<groupId>com.zxg.swt</groupId>
 		<version>0.0.1</version>
-		<relativePath>..</relativePath>
+		<!-- <relativePath>../</relativePath> -->
 	</parent>
 
 	<artifactId>swt-rich-text-editor</artifactId>
