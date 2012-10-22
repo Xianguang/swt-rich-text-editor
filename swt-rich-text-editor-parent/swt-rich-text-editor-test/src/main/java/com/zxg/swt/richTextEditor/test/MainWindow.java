@@ -22,10 +22,11 @@ public class MainWindow extends Shell {
 	 * Create contents of the shell.
 	 */
 	protected void createContents() {
-		setText("SWT Application");
+		setText("rich text editor test");
 		setSize(450, 300);
 		setLayout(new FillLayout());
 		RichTextEditor editor=new RichTextEditor(this, SWT.NONE);
+		editor.setFocus();
 	}
 
 	@Override
