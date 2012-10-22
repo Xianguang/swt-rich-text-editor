@@ -101,7 +101,7 @@ public class RichTextEditor extends Composite {
 	@Override
 	public boolean setFocus() {
 		super.setFocus();
-		boolean b = this.browser.setFocus();
-		return b;
+		browser.setFocus();
+		return browser.execute("document.body.focus()");
 	}
 }
