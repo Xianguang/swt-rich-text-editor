@@ -26,20 +26,25 @@ public class RichTextEditor extends Composite {
 		setLayout(new FormLayout());
 
 		CoolBar coolBar = new CoolBar(this, SWT.FLAT);
-
+		coolBar.setLocked(true);
+		
 		ToolItem undoToolItem = createToolItem(coolBar,
 				"/com/zxg/swt/richTextEditor/image/edit-undo-3.png", "Undo");
 
 		ToolItem redoToolItem = createToolItem(coolBar,
 				"/com/zxg/swt/richTextEditor/image/edit-redo-3.png", "Redo");
+		
+		ToolItem boldToolItem = createToolItem(coolBar,
+				"/com/zxg/swt/richTextEditor/image/format-text-bold-3.png", "Bold");
 
 		if (System.getProperty("os.name").equals("Linux")) {
 			browser = new Browser(this, SWT.MOZILLA);
+//			browser = new Browser(this, SWT.NONE);
 		} else {
 			browser = new Browser(this, SWT.NONE);
 		}
 		browser.setText(
-				"<html><body designMode='On' contentEditable='true' style='margin:1;padding:0'></body></html>",
+				"<html><body designMode='On' contentEditable='true' style='margin:0;padding:0'></body></html>",
 				true);
 		browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
@@ -74,6 +79,13 @@ public class RichTextEditor extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				browser.execute("document.execCommand('redo',false,null)");
+			}
+		});
+		
+		boldToolItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				browser.execute("document.execCommand('bold',false,null)"); 
 			}
 		});
 	}
