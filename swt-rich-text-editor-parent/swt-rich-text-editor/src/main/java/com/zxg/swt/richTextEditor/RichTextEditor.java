@@ -16,9 +16,8 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.CoolBar;
-import org.eclipse.swt.widgets.CoolItem;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
@@ -31,7 +30,7 @@ public class RichTextEditor extends Composite {
 
 	private BrowserEditor browserEditor;
 
-	private CoolBar coolBar;
+//	private CoolBar coolBar;
 
 	private ToolItem fontToolItem;
 
@@ -40,25 +39,43 @@ public class RichTextEditor extends Composite {
 	private FontData[] fontDataList;
 
 	private List<String> fontNameList;
+	
+//	private Menu browserPopupMenu;
+//	
+//	private MenuItem copyMenuItem;
 
 	public RichTextEditor(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new FormLayout());
 
-		coolBar = new CoolBar(this, SWT.FLAT | SWT.HORIZONTAL);
-		coolBar.setLocked(true);
-
-		ToolItem undoToolItem = createToolItem(coolBar,
+//		coolBar = new CoolBar(this, SWT.FLAT | SWT.HORIZONTAL);
+//		coolBar.setLocked(true);
+//
+//		coolBar.addListener(SWT.Resize, new Listener() {
+//			
+//			@Override
+//			public void handleEvent(Event event) {
+//				getShell().layout();
+//			}
+//		});
+		
+		Composite toolsComposite=new Composite(this, SWT.NONE);
+	    RowLayout rowLayout=new RowLayout();
+	    rowLayout.wrap=true;
+	    rowLayout.type=SWT.HORIZONTAL;
+	    toolsComposite.setLayout(rowLayout);
+		
+		ToolItem undoToolItem = createToolItem(toolsComposite,
 				"/com/zxg/swt/richTextEditor/image/edit-undo-3.png", "Undo");
 
-		ToolItem redoToolItem = createToolItem(coolBar,
+		ToolItem redoToolItem = createToolItem(toolsComposite,
 				"/com/zxg/swt/richTextEditor/image/edit-redo-3.png", "Redo");
 
-		ToolItem boldToolItem = createToolItem(coolBar,
+		ToolItem boldToolItem = createToolItem(toolsComposite,
 				"/com/zxg/swt/richTextEditor/image/format-text-bold-3.png",
-				"Bold", SWT.CHECK);
+				"Bold");
 
-		fontToolItem = createToolItem(coolBar,
+		fontToolItem = createToolItem(toolsComposite,
 				"/com/zxg/swt/richTextEditor/image/format-font.png", "font",
 				SWT.DROP_DOWN);
 		fontDataList = getDisplay().getFontList(null, true);
@@ -80,28 +97,47 @@ public class RichTextEditor extends Composite {
 				}
 			});
 		}
-
+		
+		browser = new Browser(this, SWT.NONE);
 		if (System.getProperty("os.name").equals("Linux")) {
-			browser = new Browser(this, SWT.MOZILLA);
+//			browser = new Browser(this, SWT.WEBKIT);
 			// browser = new Browser(this, SWT.NONE);
-			browserEditor = new MozillaBrowserEditor(browser);
+			browserEditor = new WebkitBrowserEditor(browser);
 		} else {
-			browser = new Browser(this, SWT.NONE);
-			browserEditor = new BrowserEditor(browser);
+			browserEditor = new DefaultBrowserEditor(browser);
 		}
 		browser.setText(
 				"<html><body designMode='On' contentEditable='true' style='margin:0;padding:0'></body></html>",
 				true);
 		browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+//		browserPopupMenu=new Menu(browser);
+////		browser.setMenu(browserPopupMenu);
+////		browser.addMenuDetectListener(new MenuDetectListener() {
+////			@Override
+////			public void menuDetected(MenuDetectEvent e) {
+////				browserPopupMenu.setLocation(e.x,e.y);
+////				browserPopupMenu.setVisible(true);
+////			}
+////		});
+//		browserPopupMenu.addMenuListener(new MenuAdapter() {			
+//			@Override
+//			public void menuHidden(MenuEvent e) {
+//				browser.forceFocus();
+//			}
+//		});
+		
+//		copyMenuItem=new MenuItem(browserPopupMenu,SWT.PUSH);
+//		copyMenuItem.setText("Copy");
 
 		FormData coolBarFormData = new FormData();
 		coolBarFormData.top = new FormAttachment(0, 0);
 		coolBarFormData.left = new FormAttachment(0, 0);
 		coolBarFormData.right = new FormAttachment(100, 0);
-		coolBar.setLayoutData(coolBarFormData);
+		toolsComposite.setLayoutData(coolBarFormData);
 
 		FormData browserFormData = new FormData();
-		browserFormData.top = new FormAttachment(coolBar, 0);
+		browserFormData.top = new FormAttachment(toolsComposite, 0);
 		browserFormData.left = new FormAttachment(0, 0);
 		browserFormData.right = new FormAttachment(100, 0);
 		browserFormData.bottom = new FormAttachment(100, 0);
@@ -145,43 +181,66 @@ public class RichTextEditor extends Composite {
 					fontToolItemDropDownMenu.setLocation(pt.x, pt.y);
 					fontToolItemDropDownMenu.setVisible(true);
 				}
-				// if(fontData!=null){
-				// browserEditor.fontName(fontData.getName());
-				// }
 			}
 		});
 	}
 
-	private static ToolItem createToolItem(CoolBar coolBar, String imagePath,
+//	private static ToolItem createToolItem(CoolBar coolBar, String imagePath,
+//			String toolTipText) {
+//		return createToolItem(coolBar, imagePath, toolTipText, SWT.NONE);
+//	}
+
+	private static ToolItem createToolItem(Composite toolsComposite, String imagePath,
 			String toolTipText) {
-		return createToolItem(coolBar, imagePath, toolTipText, SWT.NONE);
+		return createToolItem(toolsComposite, imagePath, toolTipText, SWT.PUSH);
 	}
-
-	private static ToolItem createToolItem(CoolBar coolBar, String imagePath,
+	
+	private static ToolItem createToolItem(Composite toolsComposite, String imagePath,
 			String toolTipText, int toolItemStyle) {
-		CoolItem coolItem = new CoolItem(coolBar, SWT.NONE);
 
-		ToolBar toolBar = new ToolBar(coolBar, SWT.FLAT | SWT.RIGHT | SWT.WRAP
+		ToolBar toolBar = new ToolBar(toolsComposite, SWT.FLAT
 				| SWT.HORIZONTAL);
-		coolItem.setControl(toolBar);
 
 		ToolItem toolItem = new ToolItem(toolBar, toolItemStyle);
 		toolItem.setToolTipText(toolTipText);
 		toolItem.setImage(SWTResourceManager.getImage(RichTextEditor.class,
 				imagePath));
 
-		toolBar.setSize(toolBar.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-
-		coolItem.setSize(coolItem.computeSize(toolBar.getSize().x,
-				toolBar.getSize().y));
-
 		return toolItem;
 	}
+	
+//	private static ToolItem createToolItem(CoolBar coolBar, String imagePath,
+//			String toolTipText, int toolItemStyle) {
+//		CoolItem coolItem = new CoolItem(coolBar, SWT.NONE);
+//
+//		ToolBar toolBar = new ToolBar(coolBar, SWT.FLAT | SWT.RIGHT //| SWT.WRAP
+//				| SWT.HORIZONTAL);
+//		coolItem.setControl(toolBar);
+//
+//		ToolItem toolItem = new ToolItem(toolBar, toolItemStyle);
+//		toolItem.setToolTipText(toolTipText);
+//		toolItem.setImage(SWTResourceManager.getImage(RichTextEditor.class,
+//				imagePath));
+//
+//		toolBar.setSize(toolBar.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+//
+//		coolItem.setSize(coolItem.computeSize(toolBar.getSize().x,
+//				toolBar.getSize().y));
+//
+//		return toolItem;
+//	}
 
 	@Override
 	public boolean setFocus() {
 		super.setFocus();
 		browser.setFocus();
+		return browser.execute("document.body.focus()");
+	}
+	
+	@Override
+	public boolean forceFocus() {
+		super.forceFocus();
+		browser.forceFocus();
 		return browser.execute("document.body.focus()");
 	}
 }

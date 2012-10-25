@@ -2,26 +2,18 @@ package com.zxg.swt.richTextEditor;
 
 import org.eclipse.swt.browser.Browser;
 
-public class BrowserEditor {
+public abstract class BrowserEditor {
 	protected Browser browser;
 	
 	public BrowserEditor(Browser browser) {
 		this.browser=browser;
 	}
 	
-	public void undo(){
-		browser.execute("document.execCommand('undo',false,null)");
-	}
+	public abstract void undo();
 	
-	public void redo(){
-		browser.execute("document.execCommand('redo',false,null)");
-	}
+	public abstract void redo();
 	
-	public void bold(){
-		browser.execute("document.execCommand('bold',false,null)");
-	}
+	public abstract void bold();
 	
-	public void fontName(String fontName){
-		browser.execute("document.execCommand('fontName',false,'"+fontName+"')");
-	}
+	public abstract void fontName(String fontName);
 }
