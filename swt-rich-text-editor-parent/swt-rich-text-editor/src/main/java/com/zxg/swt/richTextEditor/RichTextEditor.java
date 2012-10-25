@@ -63,6 +63,11 @@ public class RichTextEditor extends Composite {
 	    RowLayout rowLayout=new RowLayout();
 	    rowLayout.wrap=true;
 	    rowLayout.type=SWT.HORIZONTAL;
+	    rowLayout.spacing=0;
+	    rowLayout.marginTop=0;
+	    rowLayout.marginBottom=0;
+	    rowLayout.marginLeft=0;
+	    rowLayout.marginRight=0;
 	    toolsComposite.setLayout(rowLayout);
 		
 		ToolItem undoToolItem = createToolItem(toolsComposite,
@@ -76,7 +81,7 @@ public class RichTextEditor extends Composite {
 				"Bold");
 
 		fontToolItem = createToolItem(toolsComposite,
-				"/com/zxg/swt/richTextEditor/image/format-font.png", "font",
+				"/com/zxg/swt/richTextEditor/image/format-font.png", "Font",
 				SWT.DROP_DOWN);
 		fontDataList = getDisplay().getFontList(null, true);
 		fontNameList = new ArrayList<String>();
@@ -200,7 +205,7 @@ public class RichTextEditor extends Composite {
 
 		ToolBar toolBar = new ToolBar(toolsComposite, SWT.FLAT
 				| SWT.HORIZONTAL);
-
+		
 		ToolItem toolItem = new ToolItem(toolBar, toolItemStyle);
 		toolItem.setToolTipText(toolTipText);
 		toolItem.setImage(SWTResourceManager.getImage(RichTextEditor.class,
