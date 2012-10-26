@@ -16,4 +16,6 @@ public abstract class BrowserEditor {
 	public abstract void bold();
 	
 	public abstract void fontName(String fontName);
+	
+	public abstract void insertImage(String uri);
 }

@@ -23,4 +23,10 @@ public class WebkitBrowserEditor extends BrowserEditor {
 		browser.execute("document.execCommand('fontName',false,'" + fontName
 				+ "')");
 	}
+
+	@Override
+	public void insertImage(String uri) {
+		browser.execute("document.execCommand('insertImage',false,'" + uri
+				+ "')");
+	}
 }

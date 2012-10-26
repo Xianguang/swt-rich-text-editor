@@ -32,4 +32,10 @@ public class DefaultBrowserEditor extends BrowserEditor{
 		
 	}
 
+	@Override
+	public void insertImage(String uri) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
