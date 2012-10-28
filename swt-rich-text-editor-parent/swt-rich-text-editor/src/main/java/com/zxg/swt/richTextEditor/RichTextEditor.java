@@ -113,13 +113,7 @@ public class RichTextEditor extends Composite {
 		}
 
 		browser = new Browser(this, SWT.NONE);
-		if (System.getProperty("os.name").equals("Linux")) {
-			// browser = new Browser(this, SWT.WEBKIT);
-			// browser = new Browser(this, SWT.NONE);
-			browserEditor = new WebkitBrowserEditor(browser);
-		} else {
-			browserEditor = new DefaultBrowserEditor(browser);
-		}
+		browserEditor = BrowserEditorFactory.createBrowserEditor(browser);
 		browser.setText(
 				"<html><body designMode='On' contentEditable='true' style='margin:0;padding:0'></body></html>",
 				true);
