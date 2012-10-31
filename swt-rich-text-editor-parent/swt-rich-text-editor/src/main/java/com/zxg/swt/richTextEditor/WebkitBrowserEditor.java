@@ -20,13 +20,13 @@ public class WebkitBrowserEditor extends BrowserEditor {
 	}
 
 	public void fontName(String fontName) {
-		browser.execute("document.execCommand('fontName',false,'" + fontName
-				+ "')");
+		javaScriptString = fontName;
+		browser.execute("document.execCommand('fontName',false,"+getJavaScriptStringFunctionName+"())");
 	}
 
 	@Override
 	public void insertImage(String uri) {
-		browser.execute("document.execCommand('insertImage',false,'" + uri
-				+ "')");
+		javaScriptString = uri;
+		browser.execute("document.execCommand('insertImage',false,"+getJavaScriptStringFunctionName+"())");
 	}
 }
