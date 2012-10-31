@@ -4,16 +4,16 @@ import org.eclipse.swt.widgets.Display;
 
 public class TestRichTextEditor1 {
 
-	public void setUp(){
-		test1();
-	}
-	public void tearDown(){
-		
-	}
-	
-	public void test1(){
-		main(null);
-	}
+//	public void setUp(){
+//		test1();
+//	}
+//	public void tearDown(){
+//		
+//	}
+//	
+//	public void test1(){
+//		main(null);
+//	}
 	
 	/**
 	 * Launch the application.

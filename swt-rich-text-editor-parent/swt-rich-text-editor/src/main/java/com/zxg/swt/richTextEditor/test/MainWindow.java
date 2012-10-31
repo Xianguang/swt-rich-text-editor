@@ -1,6 +1,8 @@
 package com.zxg.swt.richTextEditor.test;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
@@ -9,6 +11,8 @@ import org.eclipse.swt.widgets.Shell;
 import com.zxg.swt.richTextEditor.RichTextEditor;
 
 public class MainWindow extends Shell {
+
+	private RichTextEditor editor;
 
 	/**
 	 * Create the shell.
@@ -26,9 +30,16 @@ public class MainWindow extends Shell {
 		setText("rich text editor test");
 		setSize(450, 300);
 		setLayout(new FillLayout());
-		RichTextEditor editor=new RichTextEditor(this, SWT.NONE);
+		editor = new RichTextEditor(this, SWT.NONE);
+		editor.setText("swt rich text editor");
 		editor.setFocus();
 		centerShell(this, getDisplay());
+		this.addShellListener(new ShellAdapter() {
+		@Override
+		public void shellIconified(ShellEvent e) {
+			System.out.print(editor.getText());
+		}
+		});
 	}
 
 	public static void centerShell(Shell shell, Display display) {

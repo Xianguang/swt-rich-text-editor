@@ -25,6 +25,12 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+/**
+ * wysiwyg html editor
+ * 
+ * @author Xianguang Zhou
+ *
+ */
 public class RichTextEditor extends Composite {
 
 	private Browser browser;
@@ -114,9 +120,6 @@ public class RichTextEditor extends Composite {
 
 		browser = new Browser(this, SWT.NONE);
 		browserEditor = BrowserEditorFactory.createBrowserEditor(browser);
-		browser.setText(
-				"<html><body designMode='On' contentEditable='true' style='margin:0;padding:0'></body></html>",
-				true);
 		browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		// browserPopupMenu=new Menu(browser);
@@ -254,6 +257,14 @@ public class RichTextEditor extends Composite {
 		super.setFocus();
 		browser.setFocus();
 		return browser.execute("document.body.focus()");
+	}
+	
+	public String getText(){
+		return browserEditor.getText();
+	}
+	
+	public void setText(String text){
+		browserEditor.setText(text);
 	}
 
 	@Override
