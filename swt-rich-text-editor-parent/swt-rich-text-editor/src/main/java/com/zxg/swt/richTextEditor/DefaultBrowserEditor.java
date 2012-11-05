@@ -38,4 +38,16 @@ public class DefaultBrowserEditor extends BrowserEditor{
 		
 	}
 
+	@Override
+	public void italic() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void underLine() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -36,11 +36,14 @@ public abstract class BrowserEditor {
 
 	public abstract void bold();
 
+	public abstract void italic();
+	
+	public abstract void underLine();
+	
 	public abstract void fontName(String fontName);
 
 	public abstract void insertImage(String uri);
 
-	
 //	public static String escapeJavaScriptString(String string){
 //		return string.replaceAll("'",  "\\'").replaceAll("\"",  "\\\"").replaceAll("\\n", "\\n");
 //	}

@@ -19,6 +19,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
@@ -29,7 +30,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
  * wysiwyg html editor
  * 
  * @author Xianguang Zhou
- *
+ * 
  */
 public class RichTextEditor extends Composite {
 
@@ -89,6 +90,15 @@ public class RichTextEditor extends Composite {
 				"/com/zxg/swt/richTextEditor/image/format-text-bold-3.png",
 				"Bold");
 
+		ToolItem italicToolItem = createToolItem(toolsComposite,
+				"/com/zxg/swt/richTextEditor/image/format-text-italic-3.png",
+				"Italic");
+
+		ToolItem underLineToolItem = createToolItem(
+				toolsComposite,
+				"/com/zxg/swt/richTextEditor/image/format-text-underline-3.png",
+				"Under Line");
+
 		fontToolItem = createToolItem(toolsComposite,
 				"/com/zxg/swt/richTextEditor/image/format-font.png", "Font",
 				SWT.DROP_DOWN);
@@ -117,6 +127,9 @@ public class RichTextEditor extends Composite {
 				}
 			});
 		}
+
+		Label horizontalLineLabel = new Label(this, SWT.HORIZONTAL
+				| SWT.SEPARATOR);
 
 		browser = new Browser(this, SWT.NONE);
 		browserEditor = BrowserEditorFactory.createBrowserEditor(browser);
@@ -147,8 +160,14 @@ public class RichTextEditor extends Composite {
 		coolBarFormData.right = new FormAttachment(100, 0);
 		toolsComposite.setLayoutData(coolBarFormData);
 
+		FormData horizontalLineLabelFormData = new FormData();
+		horizontalLineLabelFormData.top = new FormAttachment(toolsComposite, 0);
+		horizontalLineLabelFormData.left = new FormAttachment(0, 0);
+		horizontalLineLabelFormData.right = new FormAttachment(100, 0);
+		horizontalLineLabel.setLayoutData(horizontalLineLabelFormData);
+
 		FormData browserFormData = new FormData();
-		browserFormData.top = new FormAttachment(toolsComposite, 0);
+		browserFormData.top = new FormAttachment(horizontalLineLabel, 0);
 		browserFormData.left = new FormAttachment(0, 0);
 		browserFormData.right = new FormAttachment(100, 0);
 		browserFormData.bottom = new FormAttachment(100, 0);
@@ -179,6 +198,20 @@ public class RichTextEditor extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				browserEditor.bold();
+			}
+		});
+
+		italicToolItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				browserEditor.italic();
+			}
+		});
+
+		underLineToolItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				browserEditor.underLine();
 			}
 		});
 
@@ -258,12 +291,12 @@ public class RichTextEditor extends Composite {
 		browser.setFocus();
 		return browser.execute("document.body.focus()");
 	}
-	
-	public String getText(){
+
+	public String getText() {
 		return browserEditor.getText();
 	}
-	
-	public void setText(String text){
+
+	public void setText(String text) {
 		browserEditor.setText(text);
 	}
 

@@ -29,4 +29,14 @@ public class WebkitBrowserEditor extends BrowserEditor {
 		javaScriptString = uri;
 		browser.execute("document.execCommand('insertImage',false,"+getJavaScriptStringFunctionName+"())");
 	}
+
+	@Override
+	public void italic() {
+		browser.execute("document.execCommand('italic',false,null)");
+	}
+
+	@Override
+	public void underLine() {
+		browser.execute("document.execCommand('underline',false,null)");
+	}
 }
