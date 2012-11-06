@@ -2,19 +2,20 @@ package com.zxg.swt.richTextEditor;
 
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
+import org.eclipse.swt.graphics.Color;
 
-public abstract class BrowserEditor {
+public class BrowserEditor {
 	private static final String HTML_PREFIX = "<html><body designMode='On' contentEditable='true' style='margin:0;padding:0'>";
 	private static final String HTML_SUFFIX = "</body></html>";
 	protected Browser browser;
 	protected String javaScriptString;
-	protected static final String getJavaScriptStringFunctionName="getJavaScriptString";
+	protected static final String getJavaScriptStringFunctionName = "getJavaScriptString";
 
 	public BrowserEditor(Browser browser) {
 		this.browser = browser;
 		this.browser.setJavascriptEnabled(true);
-		this.setText("");
-		new BrowserFunction(this.browser, getJavaScriptStringFunctionName){
+		this.browser.setText(HTML_PREFIX + HTML_SUFFIX, true);
+		new BrowserFunction(this.browser, getJavaScriptStringFunctionName) {
 			@Override
 			public Object function(Object[] arguments) {
 				return javaScriptString;
@@ -22,29 +23,75 @@ public abstract class BrowserEditor {
 		};
 	}
 
-	public final String getText() {
+	public String getText() {
 		return (String) browser.evaluate("return document.body.innerHTML;");
 	}
 
-	public final void setText(String text) {
-		browser.setText(HTML_PREFIX +text+ HTML_SUFFIX, true);
+	public void setText(String text) {
+		
 	}
-	
-	public abstract void undo();
 
-	public abstract void redo();
+	public void undo() {
+		browser.execute("document.execCommand('undo',false,null)");
+	}
 
-	public abstract void bold();
+	public void redo() {
+		browser.execute("document.execCommand('redo',false,null)");
+	}
 
-	public abstract void italic();
-	
-	public abstract void underLine();
-	
-	public abstract void fontName(String fontName);
+	public void bold() {
+		browser.execute("document.execCommand('bold',false,null)");
+	}
 
-	public abstract void insertImage(String uri);
+	public void fontName(String fontName) {
+		javaScriptString = fontName;
+		browser.execute("document.execCommand('fontName',false,"
+				+ getJavaScriptStringFunctionName + "())");
+	}
 
-//	public static String escapeJavaScriptString(String string){
-//		return string.replaceAll("'",  "\\'").replaceAll("\"",  "\\\"").replaceAll("\\n", "\\n");
-//	}
+	public void insertImage(String uri) {
+		javaScriptString = uri;
+		browser.execute("document.execCommand('insertImage',false,"
+				+ getJavaScriptStringFunctionName + "())");
+	}
+
+	public void italic() {
+		browser.execute("document.execCommand('italic',false,null)");
+	}
+
+	public void fontSize(int fontSize) {
+		browser.execute("document.execCommand('fontSize',false," + fontSize
+				+ ")");
+	}
+
+	public void underLine() {
+		browser.execute("document.execCommand('underline',false,null)");
+	}
+
+	public void foreColor(String color) {
+		browser.execute("document.execCommand('foreColor',false," + color + ")");
+	}
+
+	public void backColor(String color) {
+		browser.execute("document.execCommand('backColor',false," + color + ")");
+	}
+
+	public void foreColor(Color color) {
+		foreColor(colorToString(color));
+	}
+
+	public void backColor(Color color) {
+		backColor(colorToString(color));
+	}
+
+	protected static String colorToString(Color color) {
+		return "rgb(" + color.getRed() + "," + color.getGreen() + ","
+				+ color.getBlue() + ")";
+	}
+
+	// public static String escapeJavaScriptString(String string){
+	// return string.replaceAll("'", "\\'").replaceAll("\"",
+	// "\\\"").replaceAll("\\n", "\\n");
+	// }
+
 }

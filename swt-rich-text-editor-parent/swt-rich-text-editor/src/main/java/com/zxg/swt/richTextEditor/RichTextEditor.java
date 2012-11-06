@@ -227,7 +227,7 @@ public class RichTextEditor extends Composite {
 				}
 			}
 		});
-
+		
 		insertImageToolItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

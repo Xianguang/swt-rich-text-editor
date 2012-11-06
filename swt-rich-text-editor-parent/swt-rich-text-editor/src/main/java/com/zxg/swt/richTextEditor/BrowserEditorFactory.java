@@ -11,7 +11,7 @@ public class BrowserEditorFactory {
 			// browser = new Browser(this, SWT.NONE);
 			browserEditor = new WebkitBrowserEditor(browser);
 		} else {
-			browserEditor = new DefaultBrowserEditor(browser);
+			browserEditor = new BrowserEditor(browser);
 		}
 		return browserEditor;
 	}
