@@ -18,6 +18,7 @@ public class TestRichTextViewer1 {
 					display.sleep();
 				}
 			}
+			display.dispose();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

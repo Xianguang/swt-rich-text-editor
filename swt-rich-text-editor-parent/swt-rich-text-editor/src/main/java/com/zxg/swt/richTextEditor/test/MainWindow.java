@@ -52,7 +52,7 @@ public class MainWindow extends Shell {
 		 this.addShellListener(new ShellAdapter() {
 		 @Override
 		 public void shellIconified(ShellEvent e) {
-		 System.out.print(editor.getText());
+//		 System.out.print(editor.getText());
 		 }
 		 });
 	}

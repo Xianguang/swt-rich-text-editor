@@ -1,15 +1,22 @@
 package com.zxg.swt.richTextEditor;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationAdapter;
 import org.eclipse.swt.browser.LocationEvent;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.ImageTransfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
@@ -53,6 +60,8 @@ public class RichTextEditor extends Composite {
 	// private MenuItem copyMenuItem;
 
 	private ToolItem insertImageToolItem;
+
+	private Clipboard clipboard;
 
 	public RichTextEditor(Composite parent, int style) {
 		super(parent, style);
@@ -106,6 +115,10 @@ public class RichTextEditor extends Composite {
 		insertImageToolItem = createToolItem(toolsComposite,
 				"/com/zxg/swt/richTextEditor/image/insert-image-3.png",
 				"Insert Image");
+
+		ToolItem pasteImageToolItem = createToolItem(toolsComposite,
+				"/com/zxg/swt/richTextEditor/image/edit-paste-special.png",
+				"Paste Image");
 
 		fontDataList = getDisplay().getFontList(null, true);
 		fontNameList = new ArrayList<String>();
@@ -227,7 +240,7 @@ public class RichTextEditor extends Composite {
 				}
 			}
 		});
-		
+
 		insertImageToolItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -239,6 +252,45 @@ public class RichTextEditor extends Composite {
 				}
 			}
 		});
+
+		clipboard = new Clipboard(this.getDisplay());
+		pasteImageToolItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ImageData imageData = getImageDataFromClipboard();
+				if (imageData != null) {
+					byte[] bytes = imageDataToBytes(imageData);
+					String base64String = bytesToBase64String(bytes);
+					browserEditor.insertImage("data:image/png;base64,"
+							+ base64String);
+				}
+			}
+		});
+	}
+
+	private static String bytesToBase64String(byte[] bytes) {
+		return Base64.encodeBase64String(bytes);
+	}
+
+	private ImageData getImageDataFromClipboard() {
+		return (ImageData) (clipboard.getContents(ImageTransfer.getInstance()));
+	}
+
+	private byte[] imageDataToBytes(ImageData imageData) {
+		ImageLoader imageLoader = new ImageLoader();
+		imageLoader.data = new ImageData[] { imageData };
+
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		imageLoader.save(byteArrayOutputStream, SWT.IMAGE_PNG);
+		byte[] imageBytes = byteArrayOutputStream.toByteArray();
+
+		try {
+			byteArrayOutputStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return imageBytes;
 	}
 
 	// private static ToolItem createToolItem(CoolBar coolBar, String imagePath,
@@ -305,5 +357,11 @@ public class RichTextEditor extends Composite {
 		super.forceFocus();
 		browser.forceFocus();
 		return browser.execute("document.body.focus()");
+	}
+
+	@Override
+	public void dispose() {
+		clipboard.dispose();
+		super.dispose();
 	}
 }

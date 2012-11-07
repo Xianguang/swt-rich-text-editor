@@ -28,7 +28,7 @@ public class BrowserEditor {
 	}
 
 	public void setText(String text) {
-		
+		browser.execute("");
 	}
 
 	public void undo() {
@@ -88,7 +88,7 @@ public class BrowserEditor {
 		return "rgb(" + color.getRed() + "," + color.getGreen() + ","
 				+ color.getBlue() + ")";
 	}
-
+	
 	// public static String escapeJavaScriptString(String string){
 	// return string.replaceAll("'", "\\'").replaceAll("\"",
 	// "\\\"").replaceAll("\\n", "\\n");
