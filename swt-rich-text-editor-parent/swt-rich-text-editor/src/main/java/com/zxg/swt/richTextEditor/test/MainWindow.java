@@ -13,7 +13,7 @@ import com.zxg.swt.richTextViewer.RichTextViewer;
 
 public class MainWindow extends Shell {
 
-	 private RichTextEditor editor;
+	private RichTextEditor editor;
 
 	/**
 	 * Create the shell.
@@ -32,29 +32,35 @@ public class MainWindow extends Shell {
 		setText("rich text editor test");
 		setSize(450, 300);
 		setLayout(new FillLayout());
-		 editor = new RichTextEditor(this, SWT.NONE);
-		 editor.setText("swt rich text editor");
-		 editor.setFocus();
+		editor = new RichTextEditor(this, SWT.NONE);
+		editor.setText("swt rich text editor");
+		editor.setFocus();
 
-//		final RichTextViewer viewer = new RichTextViewer(this, SWT.NONE);
-//		viewer.appendText("<b>aaa</b>");
-//		this.addShellListener(new ShellAdapter() {
-//			@Override
-//			public void shellIconified(ShellEvent e) {
-//				viewer.appendText("<b>aaa</b>");
-//				System.out.println(viewer.getBrowser().getText());
-////				System.out.println(viewer.getBrowser().execute("alert(st);"));
-//				
-//			}
-//		});
+		// final RichTextViewer viewer = new RichTextViewer(this, SWT.NONE);
+		// viewer.appendText("<b>aaa</b>");
+		// this.addShellListener(new ShellAdapter() {
+		// @Override
+		// public void shellIconified(ShellEvent e) {
+		// viewer.appendText("<b>aaa</b>");
+		// System.out.println(viewer.getBrowser().getText());
+		// // System.out.println(viewer.getBrowser().execute("alert(st);"));
+		//
+		// }
+		// });
 
 		centerShell(this, getDisplay());
-		 this.addShellListener(new ShellAdapter() {
-		 @Override
-		 public void shellIconified(ShellEvent e) {
-//		 System.out.print(editor.getText());
-		 }
-		 });
+		this.addShellListener(new ShellAdapter() {
+			@Override
+			public void shellIconified(ShellEvent e) {
+				final String htmlFragment = editor.getText();
+				new Thread() {
+					public void run() {
+						System.out.print(RichTextEditor
+								.getInlineHtmlFragment(htmlFragment));
+					}
+				}.start();
+			}
+		});
 	}
 
 	public static void centerShell(Shell shell, Display display) {

@@ -1,6 +1,10 @@
 package com.zxg.swt.richTextEditor;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +18,6 @@ import org.eclipse.swt.dnd.ImageTransfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Point;
@@ -32,6 +35,10 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 /**
  * wysiwyg html editor
@@ -261,11 +268,14 @@ public class RichTextEditor extends Composite {
 				if (imageData != null) {
 					byte[] bytes = imageDataToBytes(imageData);
 					String base64String = bytesToBase64String(bytes);
-					browserEditor.insertImage("data:image/png;base64,"
-							+ base64String);
+					browserEditor.insertImage(getBase64ImageSrc(base64String));
 				}
 			}
 		});
+	}
+
+	private static String getBase64ImageSrc(String base64ImageString) {
+		return "data:image/png;base64," + base64ImageString;
 	}
 
 	private static String bytesToBase64String(byte[] bytes) {
@@ -276,7 +286,7 @@ public class RichTextEditor extends Composite {
 		return (ImageData) (clipboard.getContents(ImageTransfer.getInstance()));
 	}
 
-	private byte[] imageDataToBytes(ImageData imageData) {
+	private static byte[] imageDataToBytes(ImageData imageData) {
 		ImageLoader imageLoader = new ImageLoader();
 		imageLoader.data = new ImageData[] { imageData };
 
@@ -363,5 +373,41 @@ public class RichTextEditor extends Composite {
 	public void dispose() {
 		clipboard.dispose();
 		super.dispose();
+	}
+
+	public static String getInlineHtmlFragment(String htmlFragment) {
+		Document document = Jsoup.parseBodyFragment(htmlFragment);
+		Elements imgElements = document.getElementsByTag("img");
+		for (Element element : imgElements) {
+			String imgSrc = element.attr("src");
+			if (!imgSrc.startsWith("data:")) {
+				if (!imgSrc.startsWith("http://")
+						&& !imgSrc.startsWith("https://")
+						&& !imgSrc.startsWith("file://")) {
+					imgSrc = "file://" + imgSrc;
+				}
+				try {
+					URL url = new URL(imgSrc);
+					InputStream inputStream = url.openStream();
+					try {
+						ImageLoader imageLoader = new ImageLoader();
+						ImageData[] imageDatas = imageLoader.load(inputStream);
+						byte[] imageBytes = imageDataToBytes(imageDatas[0]);
+						String base64String = bytesToBase64String(imageBytes);
+						String newImgSrc = getBase64ImageSrc(base64String);
+						element.attr("src", newImgSrc);
+					} finally {
+						inputStream.close();
+					}
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return document.body().html();
 	}
 }

@@ -13,8 +13,8 @@ public class BrowserEditor {
 
 	public BrowserEditor(Browser browser) {
 		this.browser = browser;
-		this.browser.setJavascriptEnabled(true);
 		this.browser.setText(HTML_PREFIX + HTML_SUFFIX, true);
+		this.browser.setJavascriptEnabled(true);
 		new BrowserFunction(this.browser, getJavaScriptStringFunctionName) {
 			@Override
 			public Object function(Object[] arguments) {
@@ -28,7 +28,9 @@ public class BrowserEditor {
 	}
 
 	public void setText(String text) {
-		browser.execute("");
+		javaScriptString = text;
+		browser.execute("document.body.innerHTML="
+				+ getJavaScriptStringFunctionName + "()");
 	}
 
 	public void undo() {
@@ -88,7 +90,7 @@ public class BrowserEditor {
 		return "rgb(" + color.getRed() + "," + color.getGreen() + ","
 				+ color.getBlue() + ")";
 	}
-	
+
 	// public static String escapeJavaScriptString(String string){
 	// return string.replaceAll("'", "\\'").replaceAll("\"",
 	// "\\\"").replaceAll("\\n", "\\n");
