@@ -2,7 +2,7 @@ package com.zxg.swt.richTextEditor;
 
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 
 public class BrowserEditor {
 	private static final String HTML_PREFIX = "<html><body designMode='On' contentEditable='true' style='margin:0;padding:0'>";
@@ -71,24 +71,28 @@ public class BrowserEditor {
 	}
 
 	public void foreColor(String color) {
-		browser.execute("document.execCommand('foreColor',false," + color + ")");
+		browser.execute("document.execCommand('foreColor',false,'" + color + "')");
 	}
 
 	public void backColor(String color) {
-		browser.execute("document.execCommand('backColor',false," + color + ")");
+		browser.execute("document.execCommand('backColor',false,'" + color + "')");
 	}
 
-	public void foreColor(Color color) {
-		foreColor(colorToString(color));
+	public void foreColor(RGB rgb) {
+		foreColor(rgbToString(rgb));
 	}
 
-	public void backColor(Color color) {
-		backColor(colorToString(color));
+	public void backColor(RGB rgb) {
+		backColor(rgbToString(rgb));
 	}
 
-	protected static String colorToString(Color color) {
-		return "rgb(" + color.getRed() + "," + color.getGreen() + ","
-				+ color.getBlue() + ")";
+	public void removeFormat() {
+		browser.execute("document.execCommand('removeFormat',false,null)");
+	}
+
+	private static String rgbToString(RGB rgb) {
+		return "rgb(" + rgb.red + "," + rgb.green + ","
+				+ rgb.blue + ")";
 	}
 
 	// public static String escapeJavaScriptString(String string){

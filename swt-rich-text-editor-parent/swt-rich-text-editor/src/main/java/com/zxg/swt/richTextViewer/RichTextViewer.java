@@ -28,8 +28,8 @@ public class RichTextViewer extends Composite {
 		setLayout(new FillLayout());
 
 		browser = new Browser(this, SWT.NONE);
+		browser.setText(HTML_PREFIX + HTML_SUFFIX, true);
 		browser.setJavascriptEnabled(true);
-		clear();
 		
 		browser.addLocationListener(new LocationAdapter() {
 			@Override
@@ -53,7 +53,7 @@ public class RichTextViewer extends Composite {
 	}
 
 	public void clear() {
-		browser.setText(HTML_PREFIX + HTML_SUFFIX, true);
+		browser.execute("document.body.innerHTML=''");
 	}
 
 	public void appendText(String text) {

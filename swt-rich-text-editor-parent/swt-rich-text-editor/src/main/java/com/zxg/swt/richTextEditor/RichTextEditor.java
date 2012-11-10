@@ -21,12 +21,14 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
@@ -70,6 +72,18 @@ public class RichTextEditor extends Composite {
 
 	private Clipboard clipboard;
 
+	private Menu fontSizeToolItemDropDownMenu;
+
+	private ToolItem fontSizeToolItem;
+
+	private ToolItem foreColorToolItem;
+
+	private ToolItem backColorToolItem;
+
+	private ToolItem removeFormatToolItem;
+
+	private ToolItem pasteImageToolItem;
+
 	public RichTextEditor(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new FormLayout());
@@ -97,55 +111,128 @@ public class RichTextEditor extends Composite {
 		toolsComposite.setLayout(rowLayout);
 
 		ToolItem undoToolItem = createToolItem(toolsComposite,
-				"/com/zxg/swt/richTextEditor/image/edit-undo-3.png", "Undo");
+				"/com/zxg/swt/richTextEditor/image/edit-undo-6.png", "Undo");
 
 		ToolItem redoToolItem = createToolItem(toolsComposite,
-				"/com/zxg/swt/richTextEditor/image/edit-redo-3.png", "Redo");
+				"/com/zxg/swt/richTextEditor/image/edit-redo-6.png", "Redo");
+
+		fontToolItem = createToolItem(toolsComposite,
+				"/com/zxg/swt/richTextEditor/image/format-font-name-2.png",
+				"Font", SWT.DROP_DOWN);
+
+		fontSizeToolItem = createToolItem(toolsComposite,
+				"/com/zxg/swt/richTextEditor/image/format-font-size.png",
+				"Font Size", SWT.DROP_DOWN);
+
+		foreColorToolItem = createToolItem(toolsComposite,
+				"/com/zxg/swt/richTextEditor/image/format-font-color-2.png",
+				"Font Color");
+
+		backColorToolItem = createToolItem(toolsComposite,
+				"/com/zxg/swt/richTextEditor/image/format-back-color.png",
+				"Background Color");
 
 		ToolItem boldToolItem = createToolItem(toolsComposite,
-				"/com/zxg/swt/richTextEditor/image/format-text-bold-3.png",
+				"/com/zxg/swt/richTextEditor/image/format-font-bold.png",
 				"Bold");
 
 		ToolItem italicToolItem = createToolItem(toolsComposite,
-				"/com/zxg/swt/richTextEditor/image/format-text-italic-3.png",
+				"/com/zxg/swt/richTextEditor/image/format-font-italic.png",
 				"Italic");
 
-		ToolItem underLineToolItem = createToolItem(
-				toolsComposite,
-				"/com/zxg/swt/richTextEditor/image/format-text-underline-3.png",
+		ToolItem underLineToolItem = createToolItem(toolsComposite,
+				"/com/zxg/swt/richTextEditor/image/format-font-underline.png",
 				"Under Line");
 
-		fontToolItem = createToolItem(toolsComposite,
-				"/com/zxg/swt/richTextEditor/image/format-font.png", "Font",
-				SWT.DROP_DOWN);
+		removeFormatToolItem = createToolItem(toolsComposite,
+				"/com/zxg/swt/richTextEditor/image/remove-format.png",
+				"Remove Format");
 
 		insertImageToolItem = createToolItem(toolsComposite,
 				"/com/zxg/swt/richTextEditor/image/insert-image-3.png",
 				"Insert Image");
 
-		ToolItem pasteImageToolItem = createToolItem(toolsComposite,
-				"/com/zxg/swt/richTextEditor/image/edit-paste-special.png",
+		pasteImageToolItem = createToolItem(toolsComposite,
+				"/com/zxg/swt/richTextEditor/image/paste-image.png",
 				"Paste Image");
 
-		fontDataList = getDisplay().getFontList(null, true);
-		fontNameList = new ArrayList<String>();
-		for (FontData fontData : fontDataList) {
-			String fontName = fontData.getName();
-			if (!fontNameList.contains(fontName)) {
-				fontNameList.add(fontName);
+		// init font name menu
+		{
+			// fontDataList = getDisplay().getFontList(null, true);
+			// fontNameList = new ArrayList<String>();
+			// for (FontData fontData : fontDataList) {
+			// String fontName = fontData.getName();
+			// if (!fontNameList.contains(fontName)) {
+			// fontNameList.add(fontName);
+			// }
+			// }
+			fontToolItemDropDownMenu = new Menu(this);
+			// for (String fontName : fontNameList) {
+			// final MenuItem fontNameMenuItem = new MenuItem(
+			// fontToolItemDropDownMenu, SWT.PUSH);
+			// fontNameMenuItem.setText(fontName);
+			// fontNameMenuItem.addSelectionListener(new SelectionAdapter() {
+			// @Override
+			// public void widgetSelected(SelectionEvent e) {
+			// browserEditor.fontName(fontNameMenuItem.getText());
+			// }
+			// });
+			// }
+			List<EditorFont> editorFontList = new ArrayList<RichTextEditor.EditorFont>();
+			editorFontList.add(new EditorFont("宋体", "SimSun"));
+			editorFontList.add(new EditorFont("新宋体", "NSimSun"));
+			editorFontList.add(new EditorFont("仿宋_GB2312", "FangSong_GB2312"));
+			editorFontList.add(new EditorFont("楷体_GB2312", "KaiTi_GB2312"));
+			editorFontList.add(new EditorFont("黑体", "SimHei"));
+			editorFontList.add(new EditorFont("微软雅黑", "'Microsoft YaHei'"));
+			editorFontList.add(new EditorFont("Arial", "Arial"));
+			editorFontList.add(new EditorFont("Arial Black", "'Arial Black'"));
+			editorFontList.add(new EditorFont("Times New Roman",
+					"'Times New Roman'"));
+			editorFontList.add(new EditorFont("Courier New", "'Courier New'"));
+			editorFontList.add(new EditorFont("Tahoma", "Tahoma"));
+			editorFontList.add(new EditorFont("Verdana", "Verdana"));
+			for (final EditorFont editorFont : editorFontList) {
+				final MenuItem fontNameMenuItem = new MenuItem(
+						fontToolItemDropDownMenu, SWT.PUSH);
+				fontNameMenuItem.setText(editorFont.displayName);
+				fontNameMenuItem.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						browserEditor.fontName(editorFont.name);
+					}
+				});
 			}
 		}
-		fontToolItemDropDownMenu = new Menu(this);
-		for (String fontName : fontNameList) {
-			final MenuItem fontNameMenuItem = new MenuItem(
-					fontToolItemDropDownMenu, SWT.PUSH);
-			fontNameMenuItem.setText(fontName);
-			fontNameMenuItem.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					browserEditor.fontName(fontNameMenuItem.getText());
-				}
-			});
+
+		// init font size menu
+		{
+			fontSizeToolItemDropDownMenu = new Menu(this);
+			for (int i = 1; i < 8; i++) {
+				final int fontSize = i;
+				final MenuItem fontSizeMenuItem = new MenuItem(
+						fontSizeToolItemDropDownMenu, SWT.PUSH);
+				fontSizeMenuItem.setText(fontSize + "");
+				fontSizeMenuItem.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						browserEditor.fontSize(fontSize);
+					}
+				});
+			}
+			// String[] fontSizeStringArray = new String[] { "1", "2",
+			// "3", "4", "5", "6", "7", "8" };
+			// for (final String fontSizeString : fontSizeStringArray) {
+			// final MenuItem fontSizeMenuItem = new MenuItem(
+			// fontSizeToolItemDropDownMenu, SWT.PUSH);
+			// fontSizeMenuItem.setText(fontSizeString);
+			// fontSizeMenuItem.addSelectionListener(new SelectionAdapter() {
+			// @Override
+			// public void widgetSelected(SelectionEvent e) {
+			// browserEditor.fontSize(fontSizeString);
+			// }
+			// });
+			// }
 		}
 
 		Label horizontalLineLabel = new Label(this, SWT.HORIZONTAL
@@ -238,12 +325,50 @@ public class RichTextEditor extends Composite {
 		fontToolItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				if (event.detail == SWT.ARROW) {
+//				if (event.detail == SWT.ARROW) {
 					Rectangle rect = fontToolItem.getBounds();
 					Point pt = new Point(rect.x, rect.y + rect.height);
 					pt = fontToolItem.getParent().toDisplay(pt);
 					fontToolItemDropDownMenu.setLocation(pt.x, pt.y);
 					fontToolItemDropDownMenu.setVisible(true);
+//				}
+			}
+		});
+		System.out.println(fontToolItem.getControl());
+
+		fontSizeToolItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent event) {
+//				if (event.detail == SWT.ARROW) {
+					Rectangle rect = fontSizeToolItem.getBounds();
+					Point pt = new Point(rect.x, rect.y + rect.height);
+					pt = fontSizeToolItem.getParent().toDisplay(pt);
+					fontSizeToolItemDropDownMenu.setLocation(pt.x, pt.y);
+					fontSizeToolItemDropDownMenu.setVisible(true);
+//				}
+			}
+		});
+
+		foreColorToolItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ColorDialog colorDialog = new ColorDialog(getShell());
+				colorDialog.setText("Select Font Color");
+				RGB rgb = colorDialog.open();
+				if (rgb != null) {
+					browserEditor.foreColor(rgb);
+				}
+			}
+		});
+
+		backColorToolItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ColorDialog colorDialog = new ColorDialog(getShell());
+				colorDialog.setText("Select Background Color");
+				RGB rgb = colorDialog.open();
+				if (rgb != null) {
+					browserEditor.backColor(rgb);
 				}
 			}
 		});
@@ -270,6 +395,13 @@ public class RichTextEditor extends Composite {
 					String base64String = bytesToBase64String(bytes);
 					browserEditor.insertImage(getBase64ImageSrc(base64String));
 				}
+			}
+		});
+
+		removeFormatToolItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				browserEditor.removeFormat();
 			}
 		});
 	}
@@ -392,10 +524,12 @@ public class RichTextEditor extends Composite {
 					try {
 						ImageLoader imageLoader = new ImageLoader();
 						ImageData[] imageDatas = imageLoader.load(inputStream);
-						byte[] imageBytes = imageDataToBytes(imageDatas[0]);
-						String base64String = bytesToBase64String(imageBytes);
-						String newImgSrc = getBase64ImageSrc(base64String);
-						element.attr("src", newImgSrc);
+						if (imageDatas.length > 0) {
+							byte[] imageBytes = imageDataToBytes(imageDatas[0]);
+							String base64String = bytesToBase64String(imageBytes);
+							String newImgSrc = getBase64ImageSrc(base64String);
+							element.attr("src", newImgSrc);
+						}
 					} finally {
 						inputStream.close();
 					}
@@ -409,5 +543,15 @@ public class RichTextEditor extends Composite {
 			}
 		}
 		return document.body().html();
+	}
+
+	static class EditorFont {
+		public String displayName;
+		public String name;
+
+		public EditorFont(String displayName, String name) {
+			this.displayName = displayName;
+			this.name = name;
+		}
 	}
 }
