@@ -14,7 +14,7 @@ public class BrowserEditor {
 	public BrowserEditor(Browser browser) {
 		this.browser = browser;
 		this.browser.setText(HTML_PREFIX + HTML_SUFFIX, true);
-		this.browser.setJavascriptEnabled(true);
+		this.browser.setJavascriptEnabled(false);
 		new BrowserFunction(this.browser, getJavaScriptStringFunctionName) {
 			@Override
 			public Object function(Object[] arguments) {

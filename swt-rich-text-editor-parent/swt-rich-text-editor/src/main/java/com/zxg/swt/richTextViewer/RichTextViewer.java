@@ -7,8 +7,14 @@ import org.eclipse.swt.browser.LocationAdapter;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.OpenWindowListener;
 import org.eclipse.swt.browser.WindowEvent;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 
 /**
  * 
@@ -29,8 +35,8 @@ public class RichTextViewer extends Composite {
 
 		browser = new Browser(this, SWT.NONE);
 		browser.setText(HTML_PREFIX + HTML_SUFFIX, true);
-		browser.setJavascriptEnabled(true);
-		
+		browser.setJavascriptEnabled(false);
+
 		browser.addLocationListener(new LocationAdapter() {
 			@Override
 			public void changing(LocationEvent event) {
@@ -43,6 +49,20 @@ public class RichTextViewer extends Composite {
 				event.required = true;
 			}
 		});
+		browser.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.keyCode == SWT.F5) {
+					e.doit = false;
+				}
+			}
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.keyCode == SWT.F5) {
+					e.doit = false;
+				}
+			}
+		});
 
 		new BrowserFunction(this.browser, getJavaScriptStringFunctionName) {
 			@Override
@@ -50,6 +70,25 @@ public class RichTextViewer extends Composite {
 				return javaScriptString;
 			}
 		};
+
+		Menu menu = new Menu(browser);
+		browser.setMenu(menu);
+		/*MenuItem copyMenuItem = new MenuItem(menu, SWT.PUSH);
+		copyMenuItem.setText("Copy");
+		copyMenuItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				browser.execute("document.execCommand('copy',false,null)");
+			}
+		});*/
+		MenuItem selectAllMenuItem = new MenuItem(menu, SWT.PUSH);
+		selectAllMenuItem.setText("Select All");
+		selectAllMenuItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				browser.execute("document.execCommand('selectAll',false,null)");
+			}
+		});
 	}
 
 	public void clear() {
@@ -62,7 +101,7 @@ public class RichTextViewer extends Composite {
 				+ getJavaScriptStringFunctionName
 				+ "();document.body.appendChild(st);st.scrollIntoView();");
 	}
-	
+
 	public Browser getBrowser() {
 		return browser;
 	}

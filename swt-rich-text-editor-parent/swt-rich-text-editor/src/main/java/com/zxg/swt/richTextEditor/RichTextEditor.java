@@ -15,6 +15,7 @@ import org.eclipse.swt.browser.LocationAdapter;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.ImageTransfer;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.FontData;
@@ -32,6 +33,7 @@ import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
@@ -553,5 +555,15 @@ public class RichTextEditor extends Composite {
 			this.displayName = displayName;
 			this.name = name;
 		}
+	}
+	
+	@Override
+	public void addListener(int eventType, Listener listener) {
+		browser.addListener(eventType, listener);
+	}
+	
+	@Override
+	public void addKeyListener(KeyListener listener) {
+		browser.addKeyListener(listener);
 	}
 }

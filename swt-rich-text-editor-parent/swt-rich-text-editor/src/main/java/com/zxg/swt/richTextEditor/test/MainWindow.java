@@ -1,6 +1,8 @@
 package com.zxg.swt.richTextEditor.test;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Rectangle;
@@ -32,35 +34,46 @@ public class MainWindow extends Shell {
 		setText("rich text editor test");
 		setSize(450, 300);
 		setLayout(new FillLayout());
-		editor = new RichTextEditor(this, SWT.NONE);
-		editor.setText("swt rich text editor");
-		editor.setFocus();
 
-		// final RichTextViewer viewer = new RichTextViewer(this, SWT.NONE);
-		// viewer.appendText("<b>aaa</b>");
+		 editor = new RichTextEditor(this, SWT.NONE);
+		 editor.setText("swt rich text editor");
+		// editor.setFocus();
+		// editor.addKeyListener(new KeyAdapter() {
+		// @Override
+		// public void keyPressed(KeyEvent e) {
+		// if ((e.stateMask == SWT.CTRL) && (e.keyCode == SWT.CR)) {
+		// System.out.println("aaaa");
+		// e.doit = false;
+		// }
+		// }
+		// });
 		// this.addShellListener(new ShellAdapter() {
 		// @Override
 		// public void shellIconified(ShellEvent e) {
-		// viewer.appendText("<b>aaa</b>");
-		// System.out.println(viewer.getBrowser().getText());
-		// // System.out.println(viewer.getBrowser().execute("alert(st);"));
-		//
+		// final String htmlFragment = editor.getText();
+		// new Thread() {
+		// public void run() {
+		// System.out.print(RichTextEditor
+		// .getInlineHtmlFragment(htmlFragment));
+		// }
+		// }.start();
 		// }
 		// });
 
+//		final RichTextViewer viewer = new RichTextViewer(this, SWT.NONE);
+////		viewer.appendText("<b>aaa</b>");
+//		this.addShellListener(new ShellAdapter() {
+//			@Override
+//			public void shellIconified(ShellEvent e) {
+//				viewer.appendText("<b>aaa</b>");
+//				System.out.println(viewer.getBrowser().getText());
+//				// System.out.println(viewer.getBrowser().execute("alert(st);"));
+//
+//			}
+//		});
+
 		centerShell(this, getDisplay());
-		this.addShellListener(new ShellAdapter() {
-			@Override
-			public void shellIconified(ShellEvent e) {
-				final String htmlFragment = editor.getText();
-				new Thread() {
-					public void run() {
-						System.out.print(RichTextEditor
-								.getInlineHtmlFragment(htmlFragment));
-					}
-				}.start();
-			}
-		});
+
 	}
 
 	public static void centerShell(Shell shell, Display display) {
